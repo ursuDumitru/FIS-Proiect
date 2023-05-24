@@ -1,10 +1,15 @@
 package Clase;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Ruta {
     private int idRuta;
     private String orasPlecare;
     private String orasDestinatie;
     private TipColet tipTransport;
+
+    static public List<String> orase = Arrays.asList("Bucuresti", "Iasi", "Cluj", "Arad", "Timisoara");
 
     public Ruta() {}
 

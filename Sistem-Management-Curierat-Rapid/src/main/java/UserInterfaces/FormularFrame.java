@@ -1,11 +1,14 @@
 package UserInterfaces;
 
+import Clase.Ruta;
 import Clase.Ruta.TipColet;
+import Clase.Formular;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class FormularFrame {
     private JFrame frame;
@@ -41,8 +44,9 @@ public class FormularFrame {
 
         JLabel orasExpediereLabel = new JLabel("Oras Expediere:", JLabel.LEFT);
         orasExpediereComboBox = new JComboBox<>();
-        orasExpediereComboBox.addItem("Oras 1");
-        orasExpediereComboBox.addItem("Oras 2");
+        for(var o : Ruta.orase){
+            orasExpediereComboBox.addItem(o);
+        }
 
         JLabel numeDestinatarLabel = new JLabel("Nume Destinatar:", JLabel.LEFT);
         numeDestinatarField = new JTextField(15);
@@ -55,8 +59,9 @@ public class FormularFrame {
 
         JLabel orasDestinatieLabel = new JLabel("Oras Destinatie:", JLabel.LEFT);
         orasDestinatieComboBox = new JComboBox<>();
-        orasDestinatieComboBox.addItem("Oras 3");
-        orasDestinatieComboBox.addItem("Oras 4");
+        for(var o : Ruta.orase){
+            orasDestinatieComboBox.addItem(o);
+        }
 
         JLabel tipColetLabel = new JLabel("Tip Colet:", JLabel.LEFT);
         tipColetComboBox = new JComboBox<>(TipColet.values());
@@ -111,36 +116,61 @@ public class FormularFrame {
         submitPanel.add(submitButton);
         submitPanel.setPreferredSize(new Dimension(100, 30));
 
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!validateFields()) {
-                    JOptionPane.showMessageDialog(frame,
-                            "Please fill in all the fields.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    String numeExpediator = numeExpediatorField.getText();
-                    String prenumeExpediator = prenumeExpediatorField.getText();
-                    String cnpExpediator = cnpExpediatorField.getText();
-                    String orasExpediere = orasExpediereComboBox.getSelectedItem().toString();
-                    String numeDestinatar = numeDestinatarField.getText();
-                    String prenumeDestinatar = prenumeDestinatarField.getText();
-                    String cnpDestinatar = cnpDestinatarField.getText();
-                    String orasDestinatie =orasDestinatieComboBox.getSelectedItem().toString();
-                    TipColet tipColet = (TipColet) tipColetComboBox.getSelectedItem();
-                    double greutateColet = Double.parseDouble(greutateColetField.getText());
+        submitButton.addActionListener(e -> {
+            if (!validateFields()) {
+                JOptionPane.showMessageDialog(frame,
+                        "Please fill in all the fields or write them correctly.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String numeExpediator = numeExpediatorField.getText();
+                String prenumeExpediator = prenumeExpediatorField.getText();
+                String cnpExpediator = cnpExpediatorField.getText();
+                String orasExpediere = orasExpediereComboBox.getSelectedItem().toString();
+                String numeDestinatar = numeDestinatarField.getText();
+                String prenumeDestinatar = prenumeDestinatarField.getText();
+                String cnpDestinatar = cnpDestinatarField.getText();
+                String orasDestinatie = orasDestinatieComboBox.getSelectedItem().toString();
+                TipColet tipColet = (TipColet) tipColetComboBox.getSelectedItem();
+                double greutateColet = Double.parseDouble(greutateColetField.getText());
 
-                    System.out.println("Nume Expediator: " + numeExpediator);
-                    System.out.println("Prenume Expediator: " + prenumeExpediator);
-                    System.out.println("CNP Expediator: " + cnpExpediator);
-                    System.out.println("Oras Expediere: " + orasExpediere);
-                    System.out.println("Nume Destinatar: " + numeDestinatar);
-                    System.out.println("Prenume Destinatar: " + prenumeDestinatar);
-                    System.out.println("CNP Destinatar: " + cnpDestinatar);
-                    System.out.println("Oras Destinatie: " + orasDestinatie);
-                    System.out.println("Tip Colet: " + tipColet);
-                    System.out.println("Greutate Colet: " + greutateColet);
+                String url = "jdbc:mysql://localhost:3306/curierat";
+
+                Connection connection= null;
+                try {
+                    connection = DriverManager.getConnection(url, "root", "root");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
+                Statement statement = null;
+                try {
+                    statement = connection.createStatement();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                String query = "SELECT MAX(id_client) FROM request;";
+
+                ResultSet resultSet = null;
+                try {
+                    resultSet = statement.executeQuery(query);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                int lastId=1;
+                try {
+                    if (resultSet.next()) {
+                        lastId = resultSet.getInt(1);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                Formular formular = new Formular(lastId + 1, numeExpediator,
+                        prenumeExpediator, cnpExpediator, orasExpediere, numeDestinatar,
+                        prenumeDestinatar, cnpDestinatar, orasDestinatie, tipColet, greutateColet);
+
+                System.out.println(formular);
             }
         });
 
@@ -162,19 +192,45 @@ public class FormularFrame {
         String oD = orasDestinatieComboBox.getSelectedItem().toString();
         String gC = greutateColetField.getText();
         // Check if any text field is empty
-        if (nE.isEmpty() ||
-                pE.isEmpty() ||
-                cnpE.isEmpty() ||
-                oE.isEmpty() ||
-                nD.isEmpty() ||
-                pD.isEmpty() ||
-                cnpD.isEmpty() ||
-                oD.isEmpty() ||
-                gC.isEmpty()) {
+        if (nE.isEmpty() || pE.isEmpty() || cnpE.isEmpty() ||
+                oE.isEmpty() || nD.isEmpty() || pD.isEmpty() ||
+                cnpD.isEmpty() || oD.isEmpty() || gC.isEmpty() ||
+                !containsOnlyLetters(nE) || !containsOnlyLetters(pE) ||
+                !containsOnlyLetters(nD) || !containsOnlyLetters(pD) ||
+                !isCNP(cnpE) || !isCNP(cnpD) || !isKG(gC)) {
             return false; // Field validation failed
         }
         return true; // Field validation successful
     }
+    private boolean containsOnlyLetters(String input) {
+        return input.matches("[a-zA-Z]+");
+    }
+
+    private boolean isCNP(String input) {
+        if (input.length() != 13) {
+            return false;
+        }
+
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isDigit(input.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isKG(String input) {
+        try {
+            if(Double.parseDouble(input) <= 0){
+                return false;
+            };
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 
     private void setLabelBorder(JLabel label) {
         // Create an EmptyBorder with left margin

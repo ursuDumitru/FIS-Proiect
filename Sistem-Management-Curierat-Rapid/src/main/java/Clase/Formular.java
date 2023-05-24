@@ -1,6 +1,6 @@
 package Clase;
 
-public class Request {
+public class Formular {
 
     int idClient;
     int idRuta;
@@ -12,16 +12,20 @@ public class Request {
     String prenumeDestinatar;
     String cnpDestinatar;
     String orasDestinatie;
-    Ruta tipColet;
+    Ruta.TipColet tipColet;
     double greutateColet;
     String status;
 
-    public Request() {
+    public Formular() {
     }
 
-    public Request(int idClient, int idRuta, String numeExpediator, String prenumeExpediator, String cnpExpediator, String orasExpediere, String numeDestinatar, String prenumeDestinatar, String cnpDestinatar, String orasDestinatie, Ruta tipColet, double greutateColet, String status) {
+    public Formular(int idClient, String numeExpediator,
+                    String prenumeExpediator, String cnpExpediator,
+                    String orasExpediere, String numeDestinatar,
+                    String prenumeDestinatar, String cnpDestinatar,
+                    String orasDestinatie, Ruta.TipColet tipColet,
+                    double greutateColet) {
         this.idClient = idClient;
-        this.idRuta = idRuta;
         this.numeExpediator = numeExpediator;
         this.prenumeExpediator = prenumeExpediator;
         this.cnpExpediator = cnpExpediator;
@@ -32,7 +36,6 @@ public class Request {
         this.orasDestinatie = orasDestinatie;
         this.tipColet = tipColet;
         this.greutateColet = greutateColet;
-        this.status = status;
     }
 
     public int getIdClient() {
@@ -115,11 +118,11 @@ public class Request {
         this.orasDestinatie = orasDestinatie;
     }
 
-    public Ruta getTipColet() {
+    public Ruta.TipColet getTipColet() {
         return tipColet;
     }
 
-    public void setTipColet(Ruta tipColet) {
+    public void setTipColet(Ruta.TipColet tipColet) {
         this.tipColet = tipColet;
     }
 

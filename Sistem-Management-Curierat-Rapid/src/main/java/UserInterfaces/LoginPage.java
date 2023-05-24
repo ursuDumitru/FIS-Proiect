@@ -49,10 +49,12 @@ public class LoginPage {
                 if (!username.isEmpty()) {
                     if (username.equals("admin")) {
                         new AdminFrame();
+                    } else if (username.equals("sofer")){
+                       new SoferFrame();
                     } else {
-                        new UserFormularFrame();
+                        JOptionPane.showMessageDialog(frame, "No such known user");
                     }
-                    frame.dispose(); // Close the login frame
+//                    frame.dispose(); // Close the login frame
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please enter a username.");
                 }

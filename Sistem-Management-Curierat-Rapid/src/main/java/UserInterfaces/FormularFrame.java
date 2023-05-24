@@ -1,31 +1,31 @@
 package UserInterfaces;
 
-import MainApp.FormularClient.TipColet;
+import Clase.Ruta.TipColet;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class UserFormularFrame {
+public class FormularFrame {
     private JFrame frame;
 
     private JTextField numeExpediatorField;
     private JTextField prenumeExpediatorField;
     private JTextField cnpExpediatorField;
-    private JTextField orasExpediereField;
+    private JComboBox<String> orasExpediereComboBox; //HERE CHANGE TYPE TO ORAS
 
     private JTextField numeDestinatarField;
     private JTextField prenumeDestinatarField;
     private JTextField cnpDestinatarField;
-    private JTextField orasDestinatieField;
+    private JComboBox<String> orasDestinatieComboBox; //HERE CHANGE TYPE TO ORAS
 
     private JComboBox<TipColet> tipColetComboBox;
     private JTextField greutateColetField;
 
-    public UserFormularFrame() {
+    public FormularFrame() {
         frame = new JFrame("User Formular");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
         JPanel formPanel = new JPanel(new GridLayout(10, 2, 10, 10));
@@ -40,7 +40,7 @@ public class UserFormularFrame {
         cnpExpediatorField = new JTextField(15);
 
         JLabel orasExpediereLabel = new JLabel("Oras Expediere:", JLabel.LEFT);
-        JComboBox<String> orasExpediereComboBox = new JComboBox<>();
+        orasExpediereComboBox = new JComboBox<>();
         orasExpediereComboBox.addItem("Oras 1");
         orasExpediereComboBox.addItem("Oras 2");
 
@@ -54,7 +54,7 @@ public class UserFormularFrame {
         cnpDestinatarField = new JTextField(15);
 
         JLabel orasDestinatieLabel = new JLabel("Oras Destinatie:", JLabel.LEFT);
-        JComboBox<String> orasDestinatieComboBox = new JComboBox<>();
+        orasDestinatieComboBox = new JComboBox<>();
         orasDestinatieComboBox.addItem("Oras 3");
         orasDestinatieComboBox.addItem("Oras 4");
 
@@ -114,27 +114,22 @@ public class UserFormularFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (validateFields()) {
+                if (!validateFields()) {
                     JOptionPane.showMessageDialog(frame,
                             "Please fill in all the fields.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    // Retrieve the input values
                     String numeExpediator = numeExpediatorField.getText();
                     String prenumeExpediator = prenumeExpediatorField.getText();
                     String cnpExpediator = cnpExpediatorField.getText();
-                    String orasExpediere = orasExpediereField.getText();
+                    String orasExpediere = orasExpediereComboBox.getSelectedItem().toString();
                     String numeDestinatar = numeDestinatarField.getText();
                     String prenumeDestinatar = prenumeDestinatarField.getText();
                     String cnpDestinatar = cnpDestinatarField.getText();
-                    String orasDestinatie = orasDestinatieField.getText();
+                    String orasDestinatie =orasDestinatieComboBox.getSelectedItem().toString();
                     TipColet tipColet = (TipColet) tipColetComboBox.getSelectedItem();
                     double greutateColet = Double.parseDouble(greutateColetField.getText());
 
-                    // Perform further actions with the retrieved values
-                    // ...
-
-                    // Print the values as an example
                     System.out.println("Nume Expediator: " + numeExpediator);
                     System.out.println("Prenume Expediator: " + prenumeExpediator);
                     System.out.println("CNP Expediator: " + cnpExpediator);
@@ -146,11 +141,9 @@ public class UserFormularFrame {
                     System.out.println("Tip Colet: " + tipColet);
                     System.out.println("Greutate Colet: " + greutateColet);
                 }
-
             }
         });
 
-//        panel.add(submitButton, BorderLayout.SOUTH);
         panel.add(submitPanel, BorderLayout.SOUTH);
 
         frame.getContentPane().add(panel);
@@ -158,26 +151,26 @@ public class UserFormularFrame {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new UserFormularFrame();
-            }
-        });
-    }
-
     private boolean validateFields() {
+        String nE = numeExpediatorField.getText();
+        String pE = prenumeExpediatorField.getText();
+        String cnpE = cnpExpediatorField.getText();
+        String oE = orasExpediereComboBox.getSelectedItem().toString();
+        String nD = numeDestinatarField.getText();
+        String pD = prenumeDestinatarField.getText();
+        String cnpD = cnpDestinatarField.getText();
+        String oD = orasDestinatieComboBox.getSelectedItem().toString();
+        String gC = greutateColetField.getText();
         // Check if any text field is empty
-        if (numeExpediatorField.getText().isEmpty() ||
-                prenumeExpediatorField.getText().isEmpty() ||
-                cnpExpediatorField.getText().isEmpty() ||
-                orasExpediereField.getText().isEmpty() ||
-                numeDestinatarField.getText().isEmpty() ||
-                prenumeDestinatarField.getText().isEmpty() ||
-                cnpDestinatarField.getText().isEmpty() ||
-                orasDestinatieField.getText().isEmpty() ||
-                greutateColetField.getText().isEmpty()) {
+        if (nE.isEmpty() ||
+                pE.isEmpty() ||
+                cnpE.isEmpty() ||
+                oE.isEmpty() ||
+                nD.isEmpty() ||
+                pD.isEmpty() ||
+                cnpD.isEmpty() ||
+                oD.isEmpty() ||
+                gC.isEmpty()) {
             return false; // Field validation failed
         }
         return true; // Field validation successful

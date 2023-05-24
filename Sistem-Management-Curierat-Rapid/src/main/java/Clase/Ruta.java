@@ -53,9 +53,9 @@ public class Ruta {
     }
 
     public enum TipColet {
-        FRAGIL,
-        PRETIOS,
-        PERICULOS
+        Fragil,
+        Pretios,
+        Periculos
     }
 
     @Override

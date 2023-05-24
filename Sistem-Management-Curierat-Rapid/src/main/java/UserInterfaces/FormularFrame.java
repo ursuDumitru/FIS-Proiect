@@ -170,7 +170,10 @@ public class FormularFrame {
                         prenumeExpediator, cnpExpediator, orasExpediere, numeDestinatar,
                         prenumeDestinatar, cnpDestinatar, orasDestinatie, tipColet, greutateColet);
 
+                new AddRutaToFormular(formular);
                 System.out.println(formular);
+
+
             }
         });
 
@@ -191,6 +194,11 @@ public class FormularFrame {
         String cnpD = cnpDestinatarField.getText();
         String oD = orasDestinatieComboBox.getSelectedItem().toString();
         String gC = greutateColetField.getText();
+
+        if(oE.equals(oD)){
+            return false;
+        }
+
         // Check if any text field is empty
         if (nE.isEmpty() || pE.isEmpty() || cnpE.isEmpty() ||
                 oE.isEmpty() || nD.isEmpty() || pD.isEmpty() ||

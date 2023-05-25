@@ -170,7 +170,11 @@ public class FormularFrame {
                         prenumeExpediator, cnpExpediator, orasExpediere, numeDestinatar,
                         prenumeDestinatar, cnpDestinatar, orasDestinatie, tipColet, greutateColet);
 
-                new AddRutaToFormular(formular);
+                try {
+                    new AddRutaToFormular(formular);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 System.out.println(formular);
 
 

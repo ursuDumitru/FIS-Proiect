@@ -1,6 +1,8 @@
 package UserInterfaces;
 
 import Clase.Formular;
+import Clase.Sofer;
+import Clase.Sofer.Status;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,19 +54,23 @@ public class AddRutaToFormular {
                 int id = resultSet.getInt("id_ruta");
                 comboBox.addItem("Ruta_ID :'" + id + "', tip_transport :" + formular.getTipColet());
                 System.out.println("ID: " + id);
-
             }
 
             // Close the resources
             resultSet.close();
             statement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(80, 25));
+        JButton cancelButton = new JButton("Cancel");
+        submitButton.setPreferredSize(new Dimension(80, 25));
+
         panel.add(label);
 
         // Set the preferred size of the JComboBox
@@ -77,10 +83,46 @@ public class AddRutaToFormular {
         panel.add(label1);
         comboBox1.setPreferredSize(comboBoxSize);
         panel.add(comboBox1);
+        panel.add(submitButton);
+        panel.add(cancelButton);
 
         frame.getContentPane().add(panel);
 
         frame.setVisible(true);
+
+        submitButton.addActionListener(e -> {
+            if(formular.getIdTraseu() != -1 && formular.getIdRuta() != -1) {
+                formular.setStatus(Status.Asteptare.name());
+
+                String sql="insert into request values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                try(PreparedStatement ps=connection.prepareStatement(sql)) {
+                    ps.setInt(1, formular.getIdClient());
+                    ps.setInt(2, formular.getIdRuta());
+                    ps.setString(3, formular.getNumeExpediator());
+                    ps.setString(4, formular.getPrenumeExpediator());
+                    ps.setString(5, formular.getCnpExpediator());
+                    ps.setString(6, formular.getOrasExpediere());
+                    ps.setString(7, formular.getNumeDestinatar());
+                    ps.setString(8, formular.getPrenumeDestinatar());
+                    ps.setString(9, formular.getCnpDestinatar());
+                    ps.setString(10, formular.getOrasDestinatie());
+                    ps.setString(11, formular.getTipColet().name());
+                    ps.setInt(12, (int)formular.getGreutateColet());
+                    ps.setString(13, formular.getStatus());
+
+                    int nr_randuri=ps.executeUpdate();
+                    System.out.println("\nNumar randuri afectate de adaugare="+nr_randuri);
+                } catch (SQLException ex) {
+                    System.out.println(sql);
+                    ex.printStackTrace();
+                }
+            }
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         // Add an ActionListener to the combobox
         comboBox.addActionListener(new ActionListener() {
@@ -105,6 +147,7 @@ public class AddRutaToFormular {
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
+
                     try {
                         statement1.setInt(1, formular.getIdRuta());
                     } catch (SQLException ex) {
@@ -125,8 +168,8 @@ public class AddRutaToFormular {
                             int id_traseu = resultSet1.getInt("id_traseu");
                             String ora_plecare = resultSet1.getString("ora_plecare");
                             String ora_sosire = resultSet1.getString("ora_sosire");
-                            comboBox1.addItem("ID_Traseu :" + id_traseu +
-                                    ", ora plecare :" + ora_plecare +
+                            comboBox1.addItem("ID_Traseu :'" + id_traseu +
+                                    "', ora plecare :" + ora_plecare +
                                     ", ora sosire :" + ora_sosire);
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
@@ -134,7 +177,28 @@ public class AddRutaToFormular {
 
                     }
                 }
-                // HOW TO GET ID_RUTA HERE ?
+
+//                try {
+//                    connection.close();
+//                } catch (SQLException ex) {
+//                    throw new RuntimeException(ex);
+//                }
+            }
+        });
+
+        comboBox1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox<String> source = (JComboBox<String>) e.getSource();
+                String selectedOption = (String) source.getSelectedItem();
+                System.out.println("Selected option: " + selectedOption);
+                Pattern pattern = Pattern.compile("'(.*?)'");
+                Matcher matcher = pattern.matcher(selectedOption);
+                if (matcher.find())
+                {
+                    System.out.println(matcher.group(1));
+                    formular.setIdTraseu(Integer.parseInt(matcher.group(1)));
+                }
             }
         });
     }

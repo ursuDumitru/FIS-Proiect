@@ -3,7 +3,7 @@ package Clase;
 public class Formular {
 
     int idClient;
-    int idRuta;
+    int idRuta = -1;
     String numeExpediator;
     String prenumeExpediator;
     String cnpExpediator;
@@ -15,6 +15,7 @@ public class Formular {
     Ruta.TipColet tipColet;
     double greutateColet;
     String status;
+    int idTraseu = -1;
 
     public Formular() {
     }
@@ -36,6 +37,14 @@ public class Formular {
         this.orasDestinatie = orasDestinatie;
         this.tipColet = tipColet;
         this.greutateColet = greutateColet;
+    }
+
+    public int getIdTraseu() {
+        return idTraseu;
+    }
+
+    public void setIdTraseu(int idTraseu) {
+        this.idTraseu = idTraseu;
     }
 
     public int getIdClient() {

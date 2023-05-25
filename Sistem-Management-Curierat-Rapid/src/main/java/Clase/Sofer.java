@@ -56,4 +56,9 @@ public class Sofer {
                 ", oraActualizare='" + oraActualizare + '\'' +
                 '}';
     }
+    public enum Status {
+        Asteptare,
+        Drum,
+        Ajuns
+    }
 }
